@@ -1,0 +1,41 @@
+{
+  "name": "html-rewriter-seo-nextjs",
+  "version": "0.1.1",
+  "description": "Next.js SDK for HTML Rewriter - SEO optimization for CSR applications",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rkddls8138/html-rewriter.git"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./middleware": {
+      "require": "./dist/middleware.js",
+      "import": "./dist/middleware.mjs",
+      "types": "./dist/middleware.d.ts"
+    }
+  },
+  "peerDependencies": {
+    "next": ">=13.0.0",
+    "react": ">=18.0.0"
+  },
+  "dependencies": {
+    "html-rewriter-seo-core": "github:rkddls8138/html-rewriter#pkg/core"
+  },
+  "keywords": [
+    "nextjs",
+    "seo",
+    "meta-tags",
+    "html-rewriter",
+    "csr",
+    "ssr"
+  ],
+  "author": "",
+  "license": "MIT"
+}
