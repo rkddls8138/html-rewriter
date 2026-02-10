@@ -2,35 +2,45 @@
 
 ## 설치 방법
 
-### 1. GitHub 저장소 접근 권한 확인
+### 1. GitHub Package Registry 인증 설정
 
-이 SDK는 Private 저장소입니다. 초대를 받은 후 설치 가능합니다.
+프로젝트 루트에 `.npmrc` 파일 생성:
+
+```
+@aspect-seo:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
+```
+
+> **GitHub Token 발급 방법:**
+> 1. GitHub → Settings → Developer settings → Personal access tokens
+> 2. "Generate new token (classic)" 클릭
+> 3. `read:packages` 권한 선택
+> 4. 생성된 토큰을 `.npmrc`의 `YOUR_GITHUB_TOKEN` 부분에 입력
 
 ### 2. 패키지 설치
 
 ```bash
-# pnpm 사용시
-pnpm add git+https://github.com/rkddls8138/html-rewriter.git#packages/core
-pnpm add git+https://github.com/rkddls8138/html-rewriter.git#packages/sdk-nextjs
-
 # npm 사용시
-npm install git+https://github.com/rkddls8138/html-rewriter.git#packages/core
-npm install git+https://github.com/rkddls8138/html-rewriter.git#packages/sdk-nextjs
+npm install @aspect-seo/core @aspect-seo/nextjs
 
 # yarn 사용시
-yarn add git+https://github.com/rkddls8138/html-rewriter.git#packages/core
-yarn add git+https://github.com/rkddls8138/html-rewriter.git#packages/sdk-nextjs
+yarn add @aspect-seo/core @aspect-seo/nextjs
+
+# pnpm 사용시
+pnpm add @aspect-seo/core @aspect-seo/nextjs
 ```
 
-**또는 package.json에 직접 추가:**
+### 3. 버전 업데이트
 
-```json
-{
-  "dependencies": {
-    "html-rewriter-seo-core": "github:rkddls8138/html-rewriter#packages/core",
-    "html-rewriter-seo-nextjs": "github:rkddls8138/html-rewriter#packages/sdk-nextjs"
-  }
-}
+```bash
+# 최신 버전으로 업데이트
+npm update @aspect-seo/core @aspect-seo/nextjs
+
+# 특정 버전 설치
+npm install @aspect-seo/nextjs@0.1.1
+
+# 최신 버전 설치
+npm install @aspect-seo/nextjs@latest
 ```
 
 ---
@@ -43,7 +53,7 @@ yarn add git+https://github.com/rkddls8138/html-rewriter.git#packages/sdk-nextjs
 
 ```typescript
 // middleware.ts
-import { createHtmlRewriterMiddleware } from 'html-rewriter-seo-nextjs';
+import { createHtmlRewriterMiddleware } from '@aspect-seo/nextjs';
 
 const middleware = createHtmlRewriterMiddleware({
   rules: [
@@ -110,18 +120,18 @@ export const config = {
 
 ```bash
 # 개발 서버 실행
-pnpm dev
+npm run dev
 
 # 터미널에서 봇으로 테스트
 curl -A "Googlebot" http://localhost:3000/
 
-# 일반 요청 (비교용)
+# 일반 요청 (동일한 결과 확인 - SEO 정책 준수)
 curl http://localhost:3000/
 ```
 
 ### 3. 결과 확인
 
-**봇 요청 시 (Googlebot):**
+**모든 요청 시 (봇 및 일반 사용자):**
 ```html
 <head>
     <title>내 서비스 - SEO 최적화 테스트</title>
@@ -132,8 +142,8 @@ curl http://localhost:3000/
 </head>
 ```
 
-**일반 요청 시:**
-- 원본 HTML 그대로 반환 (변경 없음)
+> **참고:** Google SEO 정책 준수를 위해 봇과 일반 사용자에게 동일한 HTML을 제공합니다.
+> (`applyToAllUsers: true` 기본값)
 
 ---
 
@@ -172,22 +182,21 @@ interface MetaTags {
 
 ## 문제 해결
 
-### GitHub 인증 오류
+### GitHub Package Registry 인증 오류
 
 ```bash
-# SSH 키 등록 확인
-ssh -T git@github.com
+# .npmrc 파일 확인
+cat .npmrc
 
-# HTTPS 사용시 Personal Access Token 필요
-git config --global credential.helper store
+# 토큰 권한 확인 (read:packages 필요)
 ```
 
 ### TypeScript 타입 오류
 
 ```bash
 # node_modules 삭제 후 재설치
-rm -rf node_modules pnpm-lock.yaml
-pnpm install
+rm -rf node_modules package-lock.json
+npm install
 ```
 
 ### 미들웨어가 작동하지 않을 때
