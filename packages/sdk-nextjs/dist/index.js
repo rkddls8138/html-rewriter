@@ -41,6 +41,9 @@ function createHtmlRewriterMiddleware(config) {
     debug = false
   } = config;
   return async function htmlRewriterMiddleware(request) {
+    if (request.headers.get("x-html-rewriter-bypass")) {
+      return import_server.NextResponse.next();
+    }
     const userAgent = request.headers.get("user-agent") || "";
     const pathname = request.nextUrl.pathname;
     const url = request.url;
@@ -89,12 +92,8 @@ function createHtmlRewriterMiddleware(config) {
         headers: {
           ...Object.fromEntries(request.headers),
           "x-html-rewriter-bypass": "true"
-          // 무한 루프 방지
         }
       });
-      if (request.headers.get("x-html-rewriter-bypass")) {
-        return import_server.NextResponse.next();
-      }
       const contentType = response.headers.get("content-type") || "";
       if (!contentType.includes("text/html")) {
         return import_server.NextResponse.next();

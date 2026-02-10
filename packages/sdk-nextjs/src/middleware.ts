@@ -53,6 +53,11 @@ export function createHtmlRewriterMiddleware(config: HtmlRewriterMiddlewareConfi
   } = config;
 
   return async function htmlRewriterMiddleware(request: NextRequest) {
+    // 무한 루프 방지: bypass 헤더가 있으면 즉시 스킵
+    if (request.headers.get('x-html-rewriter-bypass')) {
+      return NextResponse.next();
+    }
+
     const userAgent = request.headers.get('user-agent') || '';
     const pathname = request.nextUrl.pathname;
     const url = request.url;
@@ -115,18 +120,13 @@ export function createHtmlRewriterMiddleware(config: HtmlRewriterMiddlewareConfi
         return NextResponse.next();
       }
 
-      // 원본 응답 가져오기
+      // 원본 응답 가져오기 (bypass 헤더로 무한 루프 방지)
       const response = await fetch(request.url, {
         headers: {
           ...Object.fromEntries(request.headers),
-          'x-html-rewriter-bypass': 'true', // 무한 루프 방지
+          'x-html-rewriter-bypass': 'true',
         },
       });
-
-      // x-html-rewriter-bypass 헤더가 있으면 스킵
-      if (request.headers.get('x-html-rewriter-bypass')) {
-        return NextResponse.next();
-      }
 
       const contentType = response.headers.get('content-type') || '';
 
