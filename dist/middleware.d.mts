@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { HtmlRewriterConfig } from 'html-rewriter-seo-core';
+import { HtmlRewriterConfig } from '@rkddls8138/seo-core';
 
 /**
  * Next.js Middleware for HTML Rewriting

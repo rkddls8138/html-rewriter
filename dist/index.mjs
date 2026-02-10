@@ -1,6 +1,6 @@
 import {
   createHtmlRewriterMiddleware
-} from "./chunk-RAT57DNU.mjs";
+} from "./chunk-SYMRNASL.mjs";
 import {
   HtmlRewriterProvider,
   useHtmlRewriter,
@@ -8,7 +8,7 @@ import {
 } from "./chunk-LCKNE73V.mjs";
 
 // src/index.ts
-export * from "html-rewriter-seo-core";
+export * from "@rkddls8138/seo-core";
 export {
   HtmlRewriterProvider,
   createHtmlRewriterMiddleware,
