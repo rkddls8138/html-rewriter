@@ -7,7 +7,7 @@
 프로젝트 루트에 `.npmrc` 파일 생성:
 
 ```
-@aspect-seo:registry=https://npm.pkg.github.com
+@rkddls8138:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
 ```
 
@@ -21,26 +21,26 @@
 
 ```bash
 # npm 사용시
-npm install @aspect-seo/core @aspect-seo/nextjs
+npm install @rkddls8138/seo-core @rkddls8138/seo-nextjs
 
 # yarn 사용시
-yarn add @aspect-seo/core @aspect-seo/nextjs
+yarn add @rkddls8138/seo-core @rkddls8138/seo-nextjs
 
 # pnpm 사용시
-pnpm add @aspect-seo/core @aspect-seo/nextjs
+pnpm add @rkddls8138/seo-core @rkddls8138/seo-nextjs
 ```
 
 ### 3. 버전 업데이트
 
 ```bash
 # 최신 버전으로 업데이트
-npm update @aspect-seo/core @aspect-seo/nextjs
+npm update @rkddls8138/seo-core @rkddls8138/seo-nextjs
 
 # 특정 버전 설치
-npm install @aspect-seo/nextjs@0.1.1
+npm install @rkddls8138/seo-nextjs@0.1.1
 
 # 최신 버전 설치
-npm install @aspect-seo/nextjs@latest
+npm install @rkddls8138/seo-nextjs@latest
 ```
 
 ---
@@ -53,7 +53,7 @@ npm install @aspect-seo/nextjs@latest
 
 ```typescript
 // middleware.ts
-import { createHtmlRewriterMiddleware } from '@aspect-seo/nextjs';
+import { createHtmlRewriterMiddleware } from '@rkddls8138/seo-nextjs';
 
 const middleware = createHtmlRewriterMiddleware({
   rules: [

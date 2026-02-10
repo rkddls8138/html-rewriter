@@ -1,7 +1,7 @@
 import {
   createHtmlRewriterMiddleware,
   createMatcher
-} from "./chunk-HOH74IWW.mjs";
+} from "./chunk-SYMRNASL.mjs";
 export {
   createHtmlRewriterMiddleware,
   createMatcher

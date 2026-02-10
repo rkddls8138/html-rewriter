@@ -6,8 +6,8 @@ SEO 최적화를 위한 HTML 리라이팅 SDK. CSR 애플리케이션에 동적�
 
 | 패키지 | 설명 | 버전 |
 |--------|------|------|
-| `@aspect-seo/core` | 공통 로직 (봇 감지, Meta 태그 주입) | 0.1.0 |
-| `@aspect-seo/nextjs` | Next.js 미들웨어 SDK | 0.1.1 |
+| `@rkddls8138/seo-core` | 공통 로직 (봇 감지, Meta 태그 주입) | 0.1.0 |
+| `@rkddls8138/seo-nextjs` | Next.js 미들웨어 SDK | 0.1.1 |
 
 ## 설치
 
@@ -16,24 +16,24 @@ SEO 최적화를 위한 HTML 리라이팅 SDK. CSR 애플리케이션에 동적�
 프로젝트에 `.npmrc` 파일 생성:
 
 ```
-@aspect-seo:registry=https://npm.pkg.github.com
+@rkddls8138:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
 ```
 
 ### 2. 패키지 설치
 
 ```bash
-npm install @aspect-seo/core @aspect-seo/nextjs
+npm install @rkddls8138/seo-core @rkddls8138/seo-nextjs
 ```
 
 ### 3. 버전 업데이트
 
 ```bash
 # 최신 버전으로 업데이트
-npm update @aspect-seo/nextjs
+npm update @rkddls8138/seo-nextjs
 
 # 특정 버전 설치
-npm install @aspect-seo/nextjs@0.1.1
+npm install @rkddls8138/seo-nextjs@0.1.1
 ```
 
 ## 개발 환경 설정

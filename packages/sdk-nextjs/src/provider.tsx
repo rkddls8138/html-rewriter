@@ -6,7 +6,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useCallback } from 'react';
-import type { MetaTags } from '@aspect-seo/core';
+import type { MetaTags } from '@rkddls8138/seo-core';
 
 interface HtmlRewriterContextValue {
   setMetaTags: (tags: MetaTags) => void;

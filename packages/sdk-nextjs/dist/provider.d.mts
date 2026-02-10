@@ -1,6 +1,6 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import React from 'react';
-import { MetaTags } from '@aspect-seo/core';
+import { MetaTags } from '@rkddls8138/seo-core';
 
 interface HtmlRewriterContextValue {
     setMetaTags: (tags: MetaTags) => void;

@@ -1,5 +1,5 @@
 {
-  "name": "@aspect-seo/nextjs",
+  "name": "@rkddls8138/seo-nextjs",
   "version": "0.1.1",
   "description": "Next.js SDK for HTML Rewriter - SEO optimization for CSR applications",
   "repository": {
@@ -36,7 +36,7 @@
     "react": ">=18.0.0"
   },
   "dependencies": {
-    "@aspect-seo/core": "^0.1.0"
+    "@rkddls8138/seo-core": "^0.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",

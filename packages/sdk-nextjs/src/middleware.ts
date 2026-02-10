@@ -13,7 +13,7 @@ import {
   type RewriteRule,
   type MetaTags,
   type HtmlRewriterConfig,
-} from '@aspect-seo/core';
+} from '@rkddls8138/seo-core';
 
 export interface HtmlRewriterMiddlewareConfig extends HtmlRewriterConfig {
   /**
