@@ -2,10 +2,13 @@
 node_modules/
 .pnpm-store/
 
-# Build outputs
-dist/
-build/
+# Build outputs (root level only, packages/*/dist is tracked for distribution)
+/dist/
+/build/
 *.zip
+
+# Lambda build outputs
+lambda/*/dist/
 
 # IDE
 .idea/
