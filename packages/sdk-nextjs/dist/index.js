@@ -37,7 +37,8 @@ function createHtmlRewriterMiddleware(config) {
     rules,
     cache = { enabled: true, ttl: 3600 },
     botUserAgents,
-    applyToAllUsers = false,
+    applyToAllUsers = true,
+    // 기본값 true: 모든 사용자에게 동일한 HTML 제공 (SEO 정책 준수)
     debug = false
   } = config;
   return async function htmlRewriterMiddleware(request) {

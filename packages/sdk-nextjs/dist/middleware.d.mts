@@ -13,8 +13,8 @@ interface HtmlRewriterMiddlewareConfig extends HtmlRewriterConfig {
      */
     matcher?: string[];
     /**
-     * 봇이 아닌 일반 사용자에게도 Meta 태그 주입 여부
-     * @default false
+     * 모든 사용자에게 Meta 태그 주입 여부
+     * @default true (Google SEO 정책 준수: Cloaking 방지)
      */
     applyToAllUsers?: boolean;
     /**

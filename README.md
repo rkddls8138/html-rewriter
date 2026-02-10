@@ -50,3 +50,6 @@ pnpm add github:rkddls8138/html-rewriter#packages/sdk-nextjs
 ## 라이센스
 
 MIT
+
+
+GitHub에서 모노레포의 하위 디렉토리를 직접 설치하는 것은 지원되지 않습니다. #packages/sdk-nextjs는 git 브랜치/태그로 해석됩니다.
