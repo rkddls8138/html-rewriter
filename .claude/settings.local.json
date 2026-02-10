@@ -4,7 +4,14 @@
       "Bash(npm install:*)",
       "Bash(git add:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nchore: migrate from pnpm to npm\n\n- Remove pnpm-lock.yaml and pnpm-workspace.yaml\n- Update package.json scripts to use npm workspaces\n- Add package-lock.json for npm\n- Simplify devDependencies\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nchore: rename packages to scoped @aspect-seo format\n\n- Rename html-rewriter-seo-core to @aspect-seo/core\n- Rename html-rewriter-seo-nextjs to @aspect-seo/nextjs\n- Configure GitHub Package Registry for npm publishing\n- Fix middleware bypass check order \\(moved to start\\)\n- Change applyToAllUsers default to true \\(SEO cloaking policy compliance\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit:*)",
+      "Bash(git tag:*)",
+      "Bash(npm run build:*)",
+      "Bash(git restore:*)",
+      "Bash(git checkout:*)",
+      "Bash(git stash:*)"
     ]
   }
 }
