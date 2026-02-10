@@ -1,7 +1,9 @@
 "use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -16,112 +18,184 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __reExport = (target, mod, secondTarget) => (__copyProps(target, mod, "default"), secondTarget && __copyProps(secondTarget, mod, "default"));
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // src/index.ts
 var index_exports = {};
 __export(index_exports, {
   HtmlRewriterProvider: () => HtmlRewriterProvider,
+  SeoHead: () => SeoHead,
   createHtmlRewriterMiddleware: () => createHtmlRewriterMiddleware,
+  createMetadataRules: () => createMetadataRules,
+  generateDynamicSeoMetadata: () => generateDynamicSeoMetadata,
+  generateSeoMetadata: () => generateSeoMetadata,
+  metaTagsToSeoHeadProps: () => metaTagsToSeoHeadProps,
   useHtmlRewriter: () => useHtmlRewriter,
   usePageMeta: () => usePageMeta
 });
 module.exports = __toCommonJS(index_exports);
 __reExport(index_exports, require("@rkddls8138/seo-core"), module.exports);
 
-// src/middleware.ts
-var import_server = require("next/server");
-var import_seo_core = require("@rkddls8138/seo-core");
-function createHtmlRewriterMiddleware(config) {
-  const {
-    rules,
-    cache = { enabled: true, ttl: 3600 },
-    botUserAgents,
-    applyToAllUsers = true,
-    // 기본값 true: 모든 사용자에게 동일한 HTML 제공 (SEO 정책 준수)
-    debug = false
-  } = config;
-  return async function htmlRewriterMiddleware(request) {
-    if (request.headers.get("x-html-rewriter-bypass")) {
-      return import_server.NextResponse.next();
-    }
-    const userAgent = request.headers.get("user-agent") || "";
-    const pathname = request.nextUrl.pathname;
-    const url = request.url;
-    if (debug) {
-      console.log(`[HtmlRewriter] Request: ${pathname}`);
-      console.log(`[HtmlRewriter] User-Agent: ${userAgent}`);
-    }
-    const isBotRequest = (0, import_seo_core.isBot)(userAgent, botUserAgents);
-    if (!isBotRequest && !applyToAllUsers) {
-      if (debug) {
-        console.log(`[HtmlRewriter] Skipping: Not a bot request`);
-      }
-      return import_server.NextResponse.next();
-    }
-    const match = (0, import_seo_core.findMatchingRule)(pathname, rules);
-    if (!match) {
-      if (debug) {
-        console.log(`[HtmlRewriter] Skipping: No matching rule for ${pathname}`);
-      }
-      return import_server.NextResponse.next();
-    }
-    const { rule, params } = match;
-    try {
-      const cacheKey = `meta:${pathname}`;
-      let metaTags = null;
-      if (cache.enabled) {
-        metaTags = import_seo_core.metaTagCache.get(cacheKey);
-        if (metaTags && debug) {
-          console.log(`[HtmlRewriter] Cache hit for ${pathname}`);
+// src/metadata.ts
+function generateSeoMetadata(tags) {
+  const metadata = {};
+  if (tags.title) {
+    metadata.title = tags.title;
+  }
+  if (tags.description) {
+    metadata.description = tags.description;
+  }
+  if (tags.keywords) {
+    metadata.keywords = tags.keywords;
+  }
+  if (tags.robots) {
+    metadata.robots = tags.robots;
+  }
+  if (tags.canonical) {
+    metadata.alternates = {
+      canonical: tags.canonical
+    };
+  }
+  const hasOpenGraph = tags.ogTitle || tags.title || tags.ogDescription || tags.description || tags.ogImage || tags.ogUrl || tags.ogType || tags.ogSiteName;
+  if (hasOpenGraph) {
+    metadata.openGraph = {
+      ...tags.ogTitle || tags.title ? { title: tags.ogTitle || tags.title } : {},
+      ...tags.ogDescription || tags.description ? { description: tags.ogDescription || tags.description } : {},
+      ...tags.ogImage ? { images: [{ url: tags.ogImage }] } : {},
+      ...tags.ogUrl ? { url: tags.ogUrl } : {},
+      ...tags.ogType ? { type: tags.ogType } : {},
+      ...tags.ogSiteName ? { siteName: tags.ogSiteName } : {}
+    };
+  }
+  const hasTwitter = tags.twitterCard || tags.twitterTitle || tags.ogTitle || tags.title || tags.twitterDescription || tags.ogDescription || tags.description || tags.twitterImage || tags.ogImage || tags.twitterSite;
+  if (hasTwitter) {
+    metadata.twitter = {
+      ...tags.twitterCard ? { card: tags.twitterCard } : {},
+      ...tags.twitterTitle || tags.ogTitle || tags.title ? { title: tags.twitterTitle || tags.ogTitle || tags.title } : {},
+      ...tags.twitterDescription || tags.ogDescription || tags.description ? { description: tags.twitterDescription || tags.ogDescription || tags.description } : {},
+      ...tags.twitterImage || tags.ogImage ? { images: [tags.twitterImage || tags.ogImage] } : {},
+      ...tags.twitterSite ? { site: tags.twitterSite } : {}
+    };
+  }
+  if (tags.custom) {
+    metadata.other = tags.custom;
+  }
+  return metadata;
+}
+async function generateDynamicSeoMetadata(fetcher) {
+  const tags = await fetcher();
+  return generateSeoMetadata(tags);
+}
+function createMetadataRules(rules) {
+  return async function getMetadataForPath(pathname, params = {}) {
+    for (const rule of rules) {
+      let matched = false;
+      let extractedParams = { ...params };
+      if (rule.path instanceof RegExp) {
+        const match = pathname.match(rule.path);
+        if (match) {
+          matched = true;
+          if (match.groups) {
+            extractedParams = { ...extractedParams, ...match.groups };
+          }
+        }
+      } else {
+        const paramNames = [];
+        const regexPattern = rule.path.replace(/:([^/]+)/g, (_, name) => {
+          paramNames.push(name);
+          return "([^/]+)";
+        });
+        const regex = new RegExp(`^${regexPattern}$`);
+        const match = pathname.match(regex);
+        if (match) {
+          matched = true;
+          paramNames.forEach((name, index) => {
+            extractedParams[name] = match[index + 1];
+          });
         }
       }
-      if (!metaTags) {
-        if (typeof rule.metaTags === "function") {
-          metaTags = await rule.metaTags(url, params);
+      if (matched) {
+        let tags;
+        if (typeof rule.metadata === "function") {
+          tags = await rule.metadata(extractedParams);
         } else {
-          metaTags = rule.metaTags;
+          tags = rule.metadata;
         }
-        if (cache.enabled && metaTags) {
-          import_seo_core.metaTagCache.set(cacheKey, metaTags, cache.ttl);
-        }
+        return generateSeoMetadata(tags);
       }
-      if (!metaTags) {
-        return import_server.NextResponse.next();
-      }
-      const response = await fetch(request.url, {
-        headers: {
-          ...Object.fromEntries(request.headers),
-          "x-html-rewriter-bypass": "true"
-        }
-      });
-      const contentType = response.headers.get("content-type") || "";
-      if (!contentType.includes("text/html")) {
-        return import_server.NextResponse.next();
-      }
-      let html = await response.text();
-      html = (0, import_seo_core.injectMetaTags)(html, metaTags, true);
-      if (debug) {
-        console.log(`[HtmlRewriter] Injected meta tags for ${pathname}`);
-      }
-      return new import_server.NextResponse(html, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: {
-          ...Object.fromEntries(response.headers),
-          "x-html-rewriter": "processed"
-        }
-      });
-    } catch (error) {
-      console.error(`[HtmlRewriter] Error processing ${pathname}:`, error);
-      return import_server.NextResponse.next();
     }
+    return null;
   };
+}
+
+// src/SeoHead.tsx
+var import_head = __toESM(require("next/head"));
+var import_jsx_runtime = require("react/jsx-runtime");
+function SeoHead({
+  title,
+  description,
+  keywords,
+  canonical,
+  robots,
+  ogTitle,
+  ogDescription,
+  ogImage,
+  ogUrl,
+  ogType,
+  ogSiteName,
+  twitterCard,
+  twitterTitle,
+  twitterDescription,
+  twitterImage,
+  twitterSite,
+  custom
+}) {
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_head.default, { children: [
+    title && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("title", { children: title }),
+    description && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("meta", { name: "description", content: description }),
+    keywords && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("meta", { name: "keywords", content: keywords }),
+    robots && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("meta", { name: "robots", content: robots }),
+    canonical && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("link", { rel: "canonical", href: canonical }),
+    (ogTitle || title) && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("meta", { property: "og:title", content: ogTitle || title }),
+    (ogDescription || description) && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("meta", { property: "og:description", content: ogDescription || description }),
+    ogImage && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("meta", { property: "og:image", content: ogImage }),
+    ogUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("meta", { property: "og:url", content: ogUrl }),
+    ogType && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("meta", { property: "og:type", content: ogType }),
+    ogSiteName && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("meta", { property: "og:site_name", content: ogSiteName }),
+    twitterCard && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("meta", { name: "twitter:card", content: twitterCard }),
+    (twitterTitle || ogTitle || title) && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("meta", { name: "twitter:title", content: twitterTitle || ogTitle || title }),
+    (twitterDescription || ogDescription || description) && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+      "meta",
+      {
+        name: "twitter:description",
+        content: twitterDescription || ogDescription || description
+      }
+    ),
+    (twitterImage || ogImage) && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("meta", { name: "twitter:image", content: twitterImage || ogImage }),
+    twitterSite && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("meta", { name: "twitter:site", content: twitterSite }),
+    custom && Object.entries(custom).map(([name, content]) => {
+      if (name.startsWith("og:") || name.startsWith("article:")) {
+        return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("meta", { property: name, content }, name);
+      }
+      return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("meta", { name, content }, name);
+    })
+  ] });
+}
+function metaTagsToSeoHeadProps(tags) {
+  return { ...tags };
 }
 
 // src/provider.tsx
 var import_react = require("react");
-var import_jsx_runtime = require("react/jsx-runtime");
+var import_jsx_runtime2 = require("react/jsx-runtime");
 var HtmlRewriterContext = (0, import_react.createContext)(null);
 function applyMetaTags(tags) {
   if (typeof document === "undefined") return;
@@ -217,7 +291,7 @@ function HtmlRewriterProvider({ children, defaultTags }) {
       applyMetaTags(defaultTags);
     }
   }, [defaultTags]);
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(HtmlRewriterContext.Provider, { value: { setMetaTags, clearMetaTags }, children });
+  return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(HtmlRewriterContext.Provider, { value: { setMetaTags, clearMetaTags }, children });
 }
 function useHtmlRewriter() {
   const context = (0, import_react.useContext)(HtmlRewriterContext);
@@ -232,10 +306,105 @@ function usePageMeta(tags, deps = []) {
     setMetaTags(tags);
   }, deps);
 }
+
+// src/middleware.ts
+var import_server = require("next/server");
+var import_seo_core = require("@rkddls8138/seo-core");
+function createHtmlRewriterMiddleware(config) {
+  const {
+    rules,
+    cache = { enabled: true, ttl: 3600 },
+    botUserAgents,
+    applyToAllUsers = true,
+    // 기본값 true: 모든 사용자에게 동일한 HTML 제공 (SEO 정책 준수)
+    debug = false
+  } = config;
+  return async function htmlRewriterMiddleware(request) {
+    if (request.headers.get("x-html-rewriter-bypass")) {
+      return import_server.NextResponse.next();
+    }
+    const userAgent = request.headers.get("user-agent") || "";
+    const pathname = request.nextUrl.pathname;
+    const url = request.url;
+    if (debug) {
+      console.log(`[HtmlRewriter] Request: ${pathname}`);
+      console.log(`[HtmlRewriter] User-Agent: ${userAgent}`);
+    }
+    const isBotRequest = (0, import_seo_core.isBot)(userAgent, botUserAgents);
+    if (!isBotRequest && !applyToAllUsers) {
+      if (debug) {
+        console.log(`[HtmlRewriter] Skipping: Not a bot request`);
+      }
+      return import_server.NextResponse.next();
+    }
+    const match = (0, import_seo_core.findMatchingRule)(pathname, rules);
+    if (!match) {
+      if (debug) {
+        console.log(`[HtmlRewriter] Skipping: No matching rule for ${pathname}`);
+      }
+      return import_server.NextResponse.next();
+    }
+    const { rule, params } = match;
+    try {
+      const cacheKey = `meta:${pathname}`;
+      let metaTags = null;
+      if (cache.enabled) {
+        metaTags = import_seo_core.metaTagCache.get(cacheKey);
+        if (metaTags && debug) {
+          console.log(`[HtmlRewriter] Cache hit for ${pathname}`);
+        }
+      }
+      if (!metaTags) {
+        if (typeof rule.metaTags === "function") {
+          metaTags = await rule.metaTags(url, params);
+        } else {
+          metaTags = rule.metaTags;
+        }
+        if (cache.enabled && metaTags) {
+          import_seo_core.metaTagCache.set(cacheKey, metaTags, cache.ttl);
+        }
+      }
+      if (!metaTags) {
+        return import_server.NextResponse.next();
+      }
+      const response = await fetch(request.url, {
+        headers: {
+          ...Object.fromEntries(request.headers),
+          "x-html-rewriter-bypass": "true"
+        }
+      });
+      const contentType = response.headers.get("content-type") || "";
+      if (!contentType.includes("text/html")) {
+        return import_server.NextResponse.next();
+      }
+      let html = await response.text();
+      html = (0, import_seo_core.injectMetaTags)(html, metaTags, true);
+      if (debug) {
+        console.log(`[HtmlRewriter] Injected meta tags for ${pathname}`);
+      }
+      return new import_server.NextResponse(html, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: {
+          ...Object.fromEntries(response.headers),
+          "x-html-rewriter": "processed"
+        }
+      });
+    } catch (error) {
+      console.error(`[HtmlRewriter] Error processing ${pathname}:`, error);
+      return import_server.NextResponse.next();
+    }
+  };
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   HtmlRewriterProvider,
+  SeoHead,
   createHtmlRewriterMiddleware,
+  createMetadataRules,
+  generateDynamicSeoMetadata,
+  generateSeoMetadata,
+  metaTagsToSeoHeadProps,
   useHtmlRewriter,
   usePageMeta,
   ...require("@rkddls8138/seo-core")
