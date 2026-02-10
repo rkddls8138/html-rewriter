@@ -1,6 +1,11 @@
 /**
  * Next.js Middleware for HTML Rewriting
  * 검색엔진 봇 감지 및 Meta 태그 동적 주입
+ *
+ * 핵심 원리:
+ * - HTML 응답을 가로채 <head> 영역에만 메타 태그를 주입
+ * - <body>는 절대 수정하지 않음 → React 하이드레이션 에러 방지
+ * - 모든 사용자에게 동일한 HTML 제공 → Google SEO Cloaking 정책 준수
  */
 
 import { NextResponse } from 'next/server';
@@ -135,12 +140,13 @@ export function createHtmlRewriterMiddleware(config: HtmlRewriterMiddlewareConfi
         return NextResponse.next();
       }
 
-      // HTML 변환
+      // HTML 변환 (<head> 영역만 수정, <body>는 그대로 유지)
       let html = await response.text();
       html = injectMetaTags(html, metaTags, true);
 
       if (debug) {
-        console.log(`[HtmlRewriter] Injected meta tags for ${pathname}`);
+        console.log(`[HtmlRewriter] Injected meta tags into <head> for ${pathname}`);
+        console.log(`[HtmlRewriter] Note: Only <head> is modified, <body> remains untouched for hydration safety`);
       }
 
       // 새 응답 반환

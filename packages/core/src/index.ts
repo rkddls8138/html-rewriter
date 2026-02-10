@@ -195,51 +195,82 @@ export function escapeHtml(text: string): string {
 }
 
 /**
- * HTML에서 기존 Meta 태그 제거
+ * <head> 영역 내에서만 기존 Meta 태그 제거
+ * React 하이드레이션 이슈 방지: <body>는 절대 수정하지 않음
  */
-export function removeExistingMetaTags(html: string): string {
+export function removeExistingMetaTagsInHead(headContent: string): string {
   // Remove title
-  html = html.replace(/<title[^>]*>[\s\S]*?<\/title>/gi, '');
+  headContent = headContent.replace(/<title[^>]*>[\s\S]*?<\/title>/gi, '');
 
   // Remove meta description, keywords, robots
-  html = html.replace(/<meta\s+name=["'](description|keywords|robots)["'][^>]*>/gi, '');
+  headContent = headContent.replace(/<meta\s+name=["'](description|keywords|robots)["'][^>]*>/gi, '');
 
   // Remove Open Graph tags
-  html = html.replace(/<meta\s+property=["']og:[^"']+["'][^>]*>/gi, '');
+  headContent = headContent.replace(/<meta\s+property=["']og:[^"']+["'][^>]*>/gi, '');
 
   // Remove Twitter Card tags
-  html = html.replace(/<meta\s+name=["']twitter:[^"']+["'][^>]*>/gi, '');
+  headContent = headContent.replace(/<meta\s+name=["']twitter:[^"']+["'][^>]*>/gi, '');
 
   // Remove canonical link
-  html = html.replace(/<link\s+rel=["']canonical["'][^>]*>/gi, '');
+  headContent = headContent.replace(/<link\s+rel=["']canonical["'][^>]*>/gi, '');
 
-  return html;
+  return headContent;
 }
 
 /**
- * HTML <head>에 Meta 태그 주입
+ * @deprecated Use removeExistingMetaTagsInHead instead
+ */
+export function removeExistingMetaTags(html: string): string {
+  return removeExistingMetaTagsInHead(html);
+}
+
+/**
+ * HTML <head>에만 Meta 태그 주입 (하이드레이션 안전)
+ *
+ * 핵심 원리:
+ * 1. <head>...</head> 영역만 추출
+ * 2. 해당 영역 내에서만 메타 태그 교체/추가
+ * 3. <body>는 절대 수정하지 않음 → React 하이드레이션 에러 방지
  */
 export function injectMetaTags(html: string, metaTags: MetaTags, replace: boolean = true): string {
-  if (replace) {
-    html = removeExistingMetaTags(html);
-  }
+  // <head> 태그 매칭 (열림/닫힘 태그 포함)
+  const headRegex = /(<head[^>]*>)([\s\S]*?)(<\/head>)/i;
+  const headMatch = html.match(headRegex);
 
-  const metaHtml = metaTagsToHtml(metaTags);
-
-  // Insert after <head> tag
-  const headMatch = html.match(/<head[^>]*>/i);
-  if (headMatch) {
-    const insertPosition = headMatch.index! + headMatch[0].length;
-    return html.slice(0, insertPosition) + '\n    ' + metaHtml + html.slice(insertPosition);
-  }
-
-  // If no <head> tag found, insert before <body> or at the beginning
-  const bodyMatch = html.match(/<body[^>]*>/i);
-  if (bodyMatch) {
+  if (!headMatch) {
+    // <head>가 없으면 <body> 앞에 새로 생성
+    const metaHtml = metaTagsToHtml(metaTags);
+    const bodyMatch = html.match(/<body[^>]*>/i);
+    if (bodyMatch) {
+      const insertPosition = bodyMatch.index!;
+      return html.slice(0, insertPosition) + `<head>\n    ${metaHtml}\n</head>\n` + html.slice(insertPosition);
+    }
     return `<head>\n    ${metaHtml}\n</head>\n` + html;
   }
 
-  return `<head>\n    ${metaHtml}\n</head>\n` + html;
+  const headOpenTag = headMatch[1];   // <head> or <head ...>
+  let headContent = headMatch[2];      // <head> 내부 컨텐츠
+  const headCloseTag = headMatch[3];   // </head>
+
+  // <head> 내부에서만 기존 메타 태그 제거
+  if (replace) {
+    headContent = removeExistingMetaTagsInHead(headContent);
+  }
+
+  // 새 메타 태그 생성 및 삽입
+  const metaHtml = metaTagsToHtml(metaTags);
+  const newHeadContent = `\n    ${metaHtml}${headContent}`;
+
+  // <head> 영역만 교체하여 반환 (<body>는 그대로 유지)
+  return html.replace(headRegex, `${headOpenTag}${newHeadContent}${headCloseTag}`);
+}
+
+/**
+ * HTML <head>에만 Meta 태그 주입 (명시적 함수명)
+ * injectMetaTags의 별칭으로, 하이드레이션 안전성을 강조
+ */
+export function injectMetaTagsHeadOnly(html: string, metaTags: MetaTags, replace: boolean = true): string {
+  return injectMetaTags(html, metaTags, replace);
 }
 
 /**

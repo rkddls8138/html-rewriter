@@ -60,13 +60,28 @@ declare function metaTagsToHtml(tags: MetaTags): string;
  */
 declare function escapeHtml(text: string): string;
 /**
- * HTML에서 기존 Meta 태그 제거
+ * <head> 영역 내에서만 기존 Meta 태그 제거
+ * React 하이드레이션 이슈 방지: <body>는 절대 수정하지 않음
+ */
+declare function removeExistingMetaTagsInHead(headContent: string): string;
+/**
+ * @deprecated Use removeExistingMetaTagsInHead instead
  */
 declare function removeExistingMetaTags(html: string): string;
 /**
- * HTML <head>에 Meta 태그 주입
+ * HTML <head>에만 Meta 태그 주입 (하이드레이션 안전)
+ *
+ * 핵심 원리:
+ * 1. <head>...</head> 영역만 추출
+ * 2. 해당 영역 내에서만 메타 태그 교체/추가
+ * 3. <body>는 절대 수정하지 않음 → React 하이드레이션 에러 방지
  */
 declare function injectMetaTags(html: string, metaTags: MetaTags, replace?: boolean): string;
+/**
+ * HTML <head>에만 Meta 태그 주입 (명시적 함수명)
+ * injectMetaTags의 별칭으로, 하이드레이션 안전성을 강조
+ */
+declare function injectMetaTagsHeadOnly(html: string, metaTags: MetaTags, replace?: boolean): string;
 /**
  * Simple in-memory cache
  */
@@ -78,4 +93,4 @@ declare class MetaTagCache {
 }
 declare const metaTagCache: MetaTagCache;
 
-export { DEFAULT_BOT_USER_AGENTS, type HtmlRewriterConfig, MetaTagCache, type MetaTags, type RewriteRule, escapeHtml, extractParams, findMatchingRule, injectMetaTags, isBot, metaTagCache, metaTagsToHtml, removeExistingMetaTags };
+export { DEFAULT_BOT_USER_AGENTS, type HtmlRewriterConfig, MetaTagCache, type MetaTags, type RewriteRule, escapeHtml, extractParams, findMatchingRule, injectMetaTags, injectMetaTagsHeadOnly, isBot, metaTagCache, metaTagsToHtml, removeExistingMetaTags, removeExistingMetaTagsInHead };

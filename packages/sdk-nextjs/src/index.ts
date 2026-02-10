@@ -21,9 +21,7 @@ export type { SeoHeadProps } from './SeoHead';
 // Client-side dynamic updates (SPA navigation)
 export { HtmlRewriterProvider, useHtmlRewriter, usePageMeta } from './provider';
 
-/**
- * @deprecated Middleware 방식은 하이드레이션 이슈로 인해 사용을 권장하지 않습니다.
- * 대신 generateSeoMetadata (App Router) 또는 SeoHead (Pages Router)를 사용하세요.
- */
-export { createHtmlRewriterMiddleware } from './middleware';
+// Middleware - HTML 후킹 방식 (핵심 기능)
+// <head> 영역만 수정하여 하이드레이션 안전성 보장
+export { createHtmlRewriterMiddleware, createMatcher } from './middleware';
 export type { HtmlRewriterMiddlewareConfig } from './middleware';

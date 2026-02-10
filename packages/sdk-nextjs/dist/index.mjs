@@ -4,8 +4,9 @@ import {
   generateSeoMetadata
 } from "./chunk-6TU5XL3K.mjs";
 import {
-  createHtmlRewriterMiddleware
-} from "./chunk-SYMRNASL.mjs";
+  createHtmlRewriterMiddleware,
+  createMatcher
+} from "./chunk-RDXUIMRM.mjs";
 import {
   HtmlRewriterProvider,
   useHtmlRewriter,
@@ -22,6 +23,7 @@ export {
   HtmlRewriterProvider,
   SeoHead,
   createHtmlRewriterMiddleware,
+  createMatcher,
   createMetadataRules,
   generateDynamicSeoMetadata,
   generateSeoMetadata,

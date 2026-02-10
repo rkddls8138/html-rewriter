@@ -34,6 +34,7 @@ __export(index_exports, {
   HtmlRewriterProvider: () => HtmlRewriterProvider,
   SeoHead: () => SeoHead,
   createHtmlRewriterMiddleware: () => createHtmlRewriterMiddleware,
+  createMatcher: () => createMatcher,
   createMetadataRules: () => createMetadataRules,
   generateDynamicSeoMetadata: () => generateDynamicSeoMetadata,
   generateSeoMetadata: () => generateSeoMetadata,
@@ -380,7 +381,8 @@ function createHtmlRewriterMiddleware(config) {
       let html = await response.text();
       html = (0, import_seo_core.injectMetaTags)(html, metaTags, true);
       if (debug) {
-        console.log(`[HtmlRewriter] Injected meta tags for ${pathname}`);
+        console.log(`[HtmlRewriter] Injected meta tags into <head> for ${pathname}`);
+        console.log(`[HtmlRewriter] Note: Only <head> is modified, <body> remains untouched for hydration safety`);
       }
       return new import_server.NextResponse(html, {
         status: response.status,
@@ -396,11 +398,17 @@ function createHtmlRewriterMiddleware(config) {
     }
   };
 }
+function createMatcher(paths) {
+  return {
+    matcher: paths
+  };
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   HtmlRewriterProvider,
   SeoHead,
   createHtmlRewriterMiddleware,
+  createMatcher,
   createMetadataRules,
   generateDynamicSeoMetadata,
   generateSeoMetadata,

@@ -110,35 +110,48 @@ function metaTagsToHtml(tags) {
 function escapeHtml(text) {
   return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
+function removeExistingMetaTagsInHead(headContent) {
+  headContent = headContent.replace(/<title[^>]*>[\s\S]*?<\/title>/gi, "");
+  headContent = headContent.replace(/<meta\s+name=["'](description|keywords|robots)["'][^>]*>/gi, "");
+  headContent = headContent.replace(/<meta\s+property=["']og:[^"']+["'][^>]*>/gi, "");
+  headContent = headContent.replace(/<meta\s+name=["']twitter:[^"']+["'][^>]*>/gi, "");
+  headContent = headContent.replace(/<link\s+rel=["']canonical["'][^>]*>/gi, "");
+  return headContent;
+}
 function removeExistingMetaTags(html) {
-  html = html.replace(/<title[^>]*>[\s\S]*?<\/title>/gi, "");
-  html = html.replace(/<meta\s+name=["'](description|keywords|robots)["'][^>]*>/gi, "");
-  html = html.replace(/<meta\s+property=["']og:[^"']+["'][^>]*>/gi, "");
-  html = html.replace(/<meta\s+name=["']twitter:[^"']+["'][^>]*>/gi, "");
-  html = html.replace(/<link\s+rel=["']canonical["'][^>]*>/gi, "");
-  return html;
+  return removeExistingMetaTagsInHead(html);
 }
 function injectMetaTags(html, metaTags, replace = true) {
+  const headRegex = /(<head[^>]*>)([\s\S]*?)(<\/head>)/i;
+  const headMatch = html.match(headRegex);
+  if (!headMatch) {
+    const metaHtml2 = metaTagsToHtml(metaTags);
+    const bodyMatch = html.match(/<body[^>]*>/i);
+    if (bodyMatch) {
+      const insertPosition = bodyMatch.index;
+      return html.slice(0, insertPosition) + `<head>
+    ${metaHtml2}
+</head>
+` + html.slice(insertPosition);
+    }
+    return `<head>
+    ${metaHtml2}
+</head>
+` + html;
+  }
+  const headOpenTag = headMatch[1];
+  let headContent = headMatch[2];
+  const headCloseTag = headMatch[3];
   if (replace) {
-    html = removeExistingMetaTags(html);
+    headContent = removeExistingMetaTagsInHead(headContent);
   }
   const metaHtml = metaTagsToHtml(metaTags);
-  const headMatch = html.match(/<head[^>]*>/i);
-  if (headMatch) {
-    const insertPosition = headMatch.index + headMatch[0].length;
-    return html.slice(0, insertPosition) + "\n    " + metaHtml + html.slice(insertPosition);
-  }
-  const bodyMatch = html.match(/<body[^>]*>/i);
-  if (bodyMatch) {
-    return `<head>
-    ${metaHtml}
-</head>
-` + html;
-  }
-  return `<head>
-    ${metaHtml}
-</head>
-` + html;
+  const newHeadContent = `
+    ${metaHtml}${headContent}`;
+  return html.replace(headRegex, `${headOpenTag}${newHeadContent}${headCloseTag}`);
+}
+function injectMetaTagsHeadOnly(html, metaTags, replace = true) {
+  return injectMetaTags(html, metaTags, replace);
 }
 var MetaTagCache = class {
   constructor() {
@@ -171,8 +184,10 @@ export {
   extractParams,
   findMatchingRule,
   injectMetaTags,
+  injectMetaTagsHeadOnly,
   isBot,
   metaTagCache,
   metaTagsToHtml,
-  removeExistingMetaTags
+  removeExistingMetaTags,
+  removeExistingMetaTagsInHead
 };
