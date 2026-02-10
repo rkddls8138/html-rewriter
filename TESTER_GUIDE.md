@@ -2,46 +2,19 @@
 
 ## 설치 방법
 
-### 1. GitHub Package Registry 인증 설정
+### 1. 저장소 접근 권한 확인
 
-프로젝트 루트에 `.npmrc` 파일 생성:
-
-```
-@rkddls8138:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
-```
-
-> **GitHub Token 발급 방법:**
-> 1. GitHub → Settings → Developer settings → Personal access tokens
-> 2. "Generate new token (classic)" 클릭
-> 3. `read:packages` 권한 선택
-> 4. 생성된 토큰을 `.npmrc`의 `YOUR_GITHUB_TOKEN` 부분에 입력
+GitHub 저장소 Collaborator로 초대받아야 설치 가능합니다.
 
 ### 2. 패키지 설치
 
-```bash
-# npm 사용시
-npm install @rkddls8138/seo-core @rkddls8138/seo-nextjs
-
-# yarn 사용시
-yarn add @rkddls8138/seo-core @rkddls8138/seo-nextjs
-
-# pnpm 사용시
-pnpm add @rkddls8138/seo-core @rkddls8138/seo-nextjs
-```
-
-### 3. 버전 업데이트
+별도 설정 없이 바로 설치:
 
 ```bash
-# 최신 버전으로 업데이트
-npm update @rkddls8138/seo-core @rkddls8138/seo-nextjs
-
-# 특정 버전 설치
-npm install @rkddls8138/seo-nextjs@0.1.1
-
-# 최신 버전 설치
-npm install @rkddls8138/seo-nextjs@latest
+npm install github:rkddls8138/html-rewriter#pkg/sdk-nextjs
 ```
+
+> core 패키지는 sdk-nextjs의 의존성으로 자동 설치됩니다.
 
 ---
 
@@ -53,7 +26,7 @@ npm install @rkddls8138/seo-nextjs@latest
 
 ```typescript
 // middleware.ts
-import { createHtmlRewriterMiddleware } from '@rkddls8138/seo-nextjs';
+import { createHtmlRewriterMiddleware } from 'html-rewriter-seo-nextjs';
 
 const middleware = createHtmlRewriterMiddleware({
   rules: [
@@ -74,9 +47,6 @@ const middleware = createHtmlRewriterMiddleware({
     {
       path: '/product/:id',
       metaTags: async (url, params) => {
-        // API에서 상품 정보 조회 (예시)
-        // const product = await fetch(`/api/products/${params.id}`).then(r => r.json());
-
         return {
           title: `상품 ${params.id} - 내 쇼핑몰`,
           description: `상품 ${params.id}의 상세 페이지입니다.`,
@@ -143,7 +113,6 @@ curl http://localhost:3000/
 ```
 
 > **참고:** Google SEO 정책 준수를 위해 봇과 일반 사용자에게 동일한 HTML을 제공합니다.
-> (`applyToAllUsers: true` 기본값)
 
 ---
 
@@ -182,13 +151,13 @@ interface MetaTags {
 
 ## 문제 해결
 
-### GitHub Package Registry 인증 오류
+### GitHub 인증 오류
 
 ```bash
-# .npmrc 파일 확인
-cat .npmrc
+# SSH 키 등록 확인
+ssh -T git@github.com
 
-# 토큰 권한 확인 (read:packages 필요)
+# HTTPS 사용시 - 저장소 Collaborator 권한 확인
 ```
 
 ### TypeScript 타입 오류

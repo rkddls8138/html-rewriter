@@ -6,34 +6,45 @@ SEO 최적화를 위한 HTML 리라이팅 SDK. CSR 애플리케이션에 동적�
 
 | 패키지 | 설명 | 버전 |
 |--------|------|------|
-| `@rkddls8138/seo-core` | 공통 로직 (봇 감지, Meta 태그 주입) | 0.1.0 |
-| `@rkddls8138/seo-nextjs` | Next.js 미들웨어 SDK | 0.1.1 |
+| `html-rewriter-seo-core` | 공통 로직 (봇 감지, Meta 태그 주입) | 0.1.2 |
+| `html-rewriter-seo-nextjs` | Next.js 미들웨어 SDK | 0.1.2 |
 
 ## 설치
 
-### 1. GitHub Package Registry 인증
-
-프로젝트에 `.npmrc` 파일 생성:
-
-```
-@rkddls8138:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
-```
-
-### 2. 패키지 설치
+저장소 Collaborator로 초대받은 후 바로 설치 가능합니다. (별도 설정 불필요)
 
 ```bash
-npm install @rkddls8138/seo-core @rkddls8138/seo-nextjs
+npm install github:rkddls8138/html-rewriter#pkg/sdk-nextjs
 ```
 
-### 3. 버전 업데이트
+> core 패키지는 sdk-nextjs의 의존성으로 자동 설치됩니다.
 
-```bash
-# 최신 버전으로 업데이트
-npm update @rkddls8138/seo-nextjs
+## 사용법
 
-# 특정 버전 설치
-npm install @rkddls8138/seo-nextjs@0.1.1
+```typescript
+// middleware.ts
+import { createHtmlRewriterMiddleware } from 'html-rewriter-seo-nextjs';
+
+const middleware = createHtmlRewriterMiddleware({
+  rules: [
+    {
+      path: '/',
+      metaTags: {
+        title: '내 서비스 - SEO 최적화',
+        description: 'SEO 최적화된 페이지입니다.',
+        ogTitle: '내 서비스',
+        ogType: 'website',
+      },
+    },
+  ],
+  debug: true,
+});
+
+export default middleware;
+
+export const config = {
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+};
 ```
 
 ## 개발 환경 설정
@@ -54,9 +65,9 @@ npm run typecheck
 
 ## 문서
 
+- [테스터 가이드](./TESTER_GUIDE.md)
 - [아키텍처 설계](./docs/ARCHITECTURE.md)
 - [SDK 설정 가이드](./docs/SDK_SETUP.md)
-- [테스터 가이드](./TESTER_GUIDE.md)
 
 ## 라이센스
 
