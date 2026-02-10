@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anthropic-kr/html-rewriter.git",
+    "url": "git+https://github.com/rkddls8138/html-rewriter.git",
     "directory": "packages/core"
   },
   "description": "Core library for HTML Rewriter - SEO optimization",

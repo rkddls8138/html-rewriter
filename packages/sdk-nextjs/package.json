@@ -4,7 +4,7 @@
   "description": "Next.js SDK for HTML Rewriter - SEO optimization for CSR applications",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anthropic-kr/html-rewriter.git",
+    "url": "git+https://github.com/rkddls8138/html-rewriter.git",
     "directory": "packages/sdk-nextjs"
   },
   "main": "dist/index.js",

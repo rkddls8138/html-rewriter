@@ -10,16 +10,16 @@
 
 ```bash
 # pnpm 사용시
-pnpm add git+https://github.com/anthropic-kr/html-rewriter.git#packages/core
-pnpm add git+https://github.com/anthropic-kr/html-rewriter.git#packages/sdk-nextjs
+pnpm add git+https://github.com/rkddls8138/html-rewriter.git#packages/core
+pnpm add git+https://github.com/rkddls8138/html-rewriter.git#packages/sdk-nextjs
 
 # npm 사용시
-npm install git+https://github.com/anthropic-kr/html-rewriter.git#packages/core
-npm install git+https://github.com/anthropic-kr/html-rewriter.git#packages/sdk-nextjs
+npm install git+https://github.com/rkddls8138/html-rewriter.git#packages/core
+npm install git+https://github.com/rkddls8138/html-rewriter.git#packages/sdk-nextjs
 
 # yarn 사용시
-yarn add git+https://github.com/anthropic-kr/html-rewriter.git#packages/core
-yarn add git+https://github.com/anthropic-kr/html-rewriter.git#packages/sdk-nextjs
+yarn add git+https://github.com/rkddls8138/html-rewriter.git#packages/core
+yarn add git+https://github.com/rkddls8138/html-rewriter.git#packages/sdk-nextjs
 ```
 
 **또는 package.json에 직접 추가:**
@@ -27,8 +27,8 @@ yarn add git+https://github.com/anthropic-kr/html-rewriter.git#packages/sdk-next
 ```json
 {
   "dependencies": {
-    "html-rewriter-seo-core": "github:anthropic-kr/html-rewriter#packages/core",
-    "html-rewriter-seo-nextjs": "github:anthropic-kr/html-rewriter#packages/sdk-nextjs"
+    "html-rewriter-seo-core": "github:rkddls8138/html-rewriter#packages/core",
+    "html-rewriter-seo-nextjs": "github:rkddls8138/html-rewriter#packages/sdk-nextjs"
   }
 }
 ```
@@ -202,4 +202,4 @@ pnpm install
 
 테스트 중 발견한 버그나 개선 사항은 GitHub Issues에 등록해주세요.
 
-- 이슈 등록: https://github.com/anthropic-kr/html-rewriter/issues
+- 이슈 등록: https://github.com/rkddls8138/html-rewriter/issues
