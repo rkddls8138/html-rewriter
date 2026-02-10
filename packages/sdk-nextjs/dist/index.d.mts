@@ -1,4 +1,4 @@
-export * from 'html-rewriter-seo-core';
+export * from '@aspect-seo/core';
 export { HtmlRewriterMiddlewareConfig, createHtmlRewriterMiddleware } from './middleware.mjs';
 export { HtmlRewriterProvider, useHtmlRewriter, usePageMeta } from './provider.mjs';
 import 'next/server';

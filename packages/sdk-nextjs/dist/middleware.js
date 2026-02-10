@@ -25,7 +25,7 @@ __export(middleware_exports, {
 });
 module.exports = __toCommonJS(middleware_exports);
 var import_server = require("next/server");
-var import_html_rewriter_seo_core = require("html-rewriter-seo-core");
+var import_core = require("@aspect-seo/core");
 function createHtmlRewriterMiddleware(config) {
   const {
     rules,
@@ -46,14 +46,14 @@ function createHtmlRewriterMiddleware(config) {
       console.log(`[HtmlRewriter] Request: ${pathname}`);
       console.log(`[HtmlRewriter] User-Agent: ${userAgent}`);
     }
-    const isBotRequest = (0, import_html_rewriter_seo_core.isBot)(userAgent, botUserAgents);
+    const isBotRequest = (0, import_core.isBot)(userAgent, botUserAgents);
     if (!isBotRequest && !applyToAllUsers) {
       if (debug) {
         console.log(`[HtmlRewriter] Skipping: Not a bot request`);
       }
       return import_server.NextResponse.next();
     }
-    const match = (0, import_html_rewriter_seo_core.findMatchingRule)(pathname, rules);
+    const match = (0, import_core.findMatchingRule)(pathname, rules);
     if (!match) {
       if (debug) {
         console.log(`[HtmlRewriter] Skipping: No matching rule for ${pathname}`);
@@ -65,7 +65,7 @@ function createHtmlRewriterMiddleware(config) {
       const cacheKey = `meta:${pathname}`;
       let metaTags = null;
       if (cache.enabled) {
-        metaTags = import_html_rewriter_seo_core.metaTagCache.get(cacheKey);
+        metaTags = import_core.metaTagCache.get(cacheKey);
         if (metaTags && debug) {
           console.log(`[HtmlRewriter] Cache hit for ${pathname}`);
         }
@@ -77,7 +77,7 @@ function createHtmlRewriterMiddleware(config) {
           metaTags = rule.metaTags;
         }
         if (cache.enabled && metaTags) {
-          import_html_rewriter_seo_core.metaTagCache.set(cacheKey, metaTags, cache.ttl);
+          import_core.metaTagCache.set(cacheKey, metaTags, cache.ttl);
         }
       }
       if (!metaTags) {
@@ -94,7 +94,7 @@ function createHtmlRewriterMiddleware(config) {
         return import_server.NextResponse.next();
       }
       let html = await response.text();
-      html = (0, import_html_rewriter_seo_core.injectMetaTags)(html, metaTags, true);
+      html = (0, import_core.injectMetaTags)(html, metaTags, true);
       if (debug) {
         console.log(`[HtmlRewriter] Injected meta tags for ${pathname}`);
       }

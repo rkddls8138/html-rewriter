@@ -1,11 +1,14 @@
 {
-  "name": "html-rewriter-seo-nextjs",
-  "version": "0.1.0",
+  "name": "@aspect-seo/nextjs",
+  "version": "0.1.1",
   "description": "Next.js SDK for HTML Rewriter - SEO optimization for CSR applications",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rkddls8138/html-rewriter.git",
     "directory": "packages/sdk-nextjs"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -33,7 +36,7 @@
     "react": ">=18.0.0"
   },
   "dependencies": {
-    "html-rewriter-seo-core": "^0.1.0"
+    "@aspect-seo/core": "^0.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",

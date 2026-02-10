@@ -1,10 +1,13 @@
 {
-  "name": "html-rewriter-seo-core",
+  "name": "@aspect-seo/core",
   "version": "0.1.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rkddls8138/html-rewriter.git",
     "directory": "packages/core"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "description": "Core library for HTML Rewriter - SEO optimization",
   "main": "dist/index.js",

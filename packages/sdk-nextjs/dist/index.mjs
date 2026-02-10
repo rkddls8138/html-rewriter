@@ -1,6 +1,6 @@
 import {
   createHtmlRewriterMiddleware
-} from "./chunk-RAT57DNU.mjs";
+} from "./chunk-HOH74IWW.mjs";
 import {
   HtmlRewriterProvider,
   useHtmlRewriter,
@@ -8,7 +8,7 @@ import {
 } from "./chunk-LCKNE73V.mjs";
 
 // src/index.ts
-export * from "html-rewriter-seo-core";
+export * from "@aspect-seo/core";
 export {
   HtmlRewriterProvider,
   createHtmlRewriterMiddleware,
