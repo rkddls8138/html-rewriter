@@ -1,8 +1,37 @@
 {
   "name": "html-rewriter",
   "version": "0.1.0",
-  "private": true,
   "description": "HTML Rewriter - SEO optimization library for web frameworks",
+  "main": "packages/core/dist/index.js",
+  "module": "packages/core/dist/index.mjs",
+  "types": "packages/core/dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./packages/core/dist/index.d.ts",
+      "import": "./packages/core/dist/index.mjs",
+      "require": "./packages/core/dist/index.js"
+    },
+    "./nextjs": {
+      "types": "./packages/nextjs/dist/index.d.ts",
+      "import": "./packages/nextjs/dist/index.mjs",
+      "require": "./packages/nextjs/dist/index.js"
+    },
+    "./nextjs/app-router": {
+      "types": "./packages/nextjs/dist/app-router/index.d.ts",
+      "import": "./packages/nextjs/dist/app-router/index.mjs",
+      "require": "./packages/nextjs/dist/app-router/index.js"
+    },
+    "./nextjs/pages-router": {
+      "types": "./packages/nextjs/dist/pages-router/index.d.ts",
+      "import": "./packages/nextjs/dist/pages-router/index.mjs",
+      "require": "./packages/nextjs/dist/pages-router/index.js"
+    },
+    "./react": {
+      "types": "./packages/react/dist/index.d.ts",
+      "import": "./packages/react/dist/index.mjs",
+      "require": "./packages/react/dist/index.js"
+    }
+  },
   "workspaces": [
     "packages/*"
   ],
@@ -11,6 +40,19 @@
     "dev": "npm run dev --workspaces",
     "clean": "npm run clean --workspaces",
     "typecheck": "npm run typecheck --workspaces"
+  },
+  "dependencies": {
+    "@rkddls8138/seo-core": "file:packages/core",
+    "@rkddls8138/seo-react": "file:packages/react",
+    "@rkddls8138/seo-nextjs": "file:packages/nextjs"
+  },
+  "peerDependencies": {
+    "next": ">=13.0.0",
+    "react": ">=18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "next": { "optional": true },
+    "react": { "optional": true }
   },
   "devDependencies": {
     "typescript": "^5.3.0"
