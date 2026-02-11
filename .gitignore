@@ -27,9 +27,13 @@ pnpm-debug.log*
 .env.local
 .env.*.local
 
+# MCP config (contains tokens)
+.mcp.json
+
 # Test coverage
 coverage/
 
 # misc
 .claude/
 .omc/
+.docs/

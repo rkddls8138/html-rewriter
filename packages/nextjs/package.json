@@ -1,0 +1,66 @@
+{
+  "name": "@rkddls8138/seo-nextjs",
+  "version": "0.2.0",
+  "description": "Next.js SDK for SEO Meta Tag Management - App Router & Pages Router support",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rkddls8138/html-rewriter.git",
+    "directory": "packages/nextjs"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./app-router": {
+      "types": "./dist/app-router/index.d.ts",
+      "import": "./dist/app-router/index.mjs",
+      "require": "./dist/app-router/index.js"
+    },
+    "./pages-router": {
+      "types": "./dist/pages-router/index.d.ts",
+      "import": "./dist/pages-router/index.mjs",
+      "require": "./dist/pages-router/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts src/app-router/index.ts src/pages-router/index.ts --format cjs,esm --dts --external react --external next",
+    "dev": "tsup src/index.ts src/app-router/index.ts src/pages-router/index.ts --format cjs,esm --dts --external react --external next --watch",
+    "clean": "rimraf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "next": ">=13.0.0",
+    "react": ">=18.0.0"
+  },
+  "dependencies": {
+    "@rkddls8138/seo-core": "^0.1.0",
+    "@rkddls8138/seo-react": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "rimraf": "^5.0.0"
+  },
+  "keywords": [
+    "nextjs",
+    "seo",
+    "meta-tags",
+    "generateMetadata",
+    "app-router",
+    "pages-router",
+    "ssr"
+  ],
+  "author": "",
+  "license": "MIT"
+}

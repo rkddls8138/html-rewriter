@@ -7,7 +7,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
+    "build": "npm run build -w @rkddls8138/seo-core && npm run build -w @rkddls8138/seo-react && npm run build -w @rkddls8138/seo-nextjs",
     "dev": "npm run dev --workspaces",
     "clean": "npm run clean --workspaces",
     "typecheck": "npm run typecheck --workspaces"

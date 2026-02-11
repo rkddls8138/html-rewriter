@@ -3,6 +3,13 @@
  * SEO 최적화를 위한 HTML 파싱 및 Meta 태그 조작
  */
 
+// SEO API Client exports
+export {
+  fetchSeoMeta,
+  clearSeoCache,
+  type FetchSeoOptions,
+} from './seo-api-client';
+
 export interface MetaTags {
   title?: string;
   description?: string;
