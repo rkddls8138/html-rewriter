@@ -6,10 +6,10 @@
 // SEO API Client exports
 export {
   fetchSeoMeta,
-  clearSeoCache,
   type FetchSeoOptions,
 } from './seo-api-client';
 
+// 자바의 DTO와 Model 같은 역할 기존 meta_tags 테이블의 컬럼을 그대로 가져와서 사용 기존 JS의 느슨한 타입을 TS로 보완(강타입 적용)
 export interface MetaTags {
   title?: string;
   description?: string;
@@ -35,6 +35,7 @@ export interface MetaTags {
 
 export interface RewriteRule {
   path: string | RegExp;
+  // Record <Key, Type> 형식으로 키가 Key이고 값이 Type인 객체 타입
   metaTags: MetaTags | ((url: string, params: Record<string, string>) => MetaTags | Promise<MetaTags>);
 }
 

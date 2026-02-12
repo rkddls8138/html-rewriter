@@ -71,10 +71,7 @@ export interface FetchMetadataOptions {
  * Edge Function API에서 메타 태그를 가져와 Next.js Metadata 형식으로 반환
  * API key는 process.env.SEO_REWRITER_API_KEY에서 자동 로드
  */
-export async function fetchAndGenerateMetadata(
-  path: string,
-  options?: FetchMetadataOptions
-): Promise<Metadata> {
+export async function fetchAndGenerateMetadata(path: string, options?: FetchMetadataOptions): Promise<Metadata> {
   const tags = await fetchSeoMeta(path, {
     noCache: options?.noCache,
     apiKey: options?.apiKey,

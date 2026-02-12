@@ -2,6 +2,7 @@
  * SEO API Client
  * Edge Function API를 통해 SEO 메타 태그를 가져오는 순수 HTTP 클라이언트
  * Supabase 의존성 제로 - fetch API만 사용
+ * 캐싱: Next.js fetch revalidate
  */
 
 import type { MetaTags } from './index';
@@ -15,37 +16,8 @@ export interface FetchSeoOptions {
   noCache?: boolean;
   /** API key 직접 전달 (기본: process.env.SEO_REWRITER_API_KEY) */
   apiKey?: string;
-}
-
-// ============================================================
-// Internal Cache
-// ============================================================
-
-interface CacheEntry<T> {
-  data: T;
-  expires: number;
-}
-
-class TtlCache<T> {
-  private store = new Map<string, CacheEntry<T>>();
-
-  get(key: string): T | null {
-    const entry = this.store.get(key);
-    if (!entry) return null;
-    if (Date.now() > entry.expires) {
-      this.store.delete(key);
-      return null;
-    }
-    return entry.data;
-  }
-
-  set(key: string, data: T, ttlMs: number): void {
-    this.store.set(key, { data, expires: Date.now() + ttlMs });
-  }
-
-  clear(): void {
-    this.store.clear();
-  }
+  /** 캐시 revalidate 주기 (초) @default 3600 */
+  revalidate?: number;
 }
 
 // ============================================================
@@ -53,10 +25,7 @@ class TtlCache<T> {
 // ============================================================
 
 const SEO_API_URL = 'https://iwoeewimpwdqbunnipol.supabase.co/functions/v1/seo-rules';
-const CACHE_TTL_MS = 3600 * 1000; // 1시간
-
-// Singleton cache
-const pathCache = new TtlCache<MetaTags>();
+const DEFAULT_REVALIDATE = 3600; // 1시간
 
 // ============================================================
 // Public API
@@ -64,6 +33,10 @@ const pathCache = new TtlCache<MetaTags>();
 
 /**
  * 경로에 매칭되는 SEO 메타 태그를 Edge Function API에서 가져오기
+ *
+ * 캐싱 전략:
+ * - Next.js SSR: fetch의 next.revalidate 옵션으로 ISR 스타일 캐싱
+ * - 비-Next.js 환경: 표준 fetch (캐싱 없음, CDN Cache-Control에 의존)
  *
  * @param path - URL 경로 (예: '/vehicles/tucson')
  * @param options - 캐시 제어 및 API key 옵션
@@ -80,40 +53,29 @@ export async function fetchSeoMeta(
     return {};
   }
 
-  // 캐시 확인
-  if (!options?.noCache) {
-    const cached = pathCache.get(path);
-    if (cached) return cached;
-  }
-
   try {
+    const fetchOptions: RequestInit & { next?: { revalidate: number } } = {
+      headers: { 'Authorization': `Bearer ${apiKey}` },
+      signal: AbortSignal.timeout(5000),
+    };
+
+    // Next.js 서버 환경에서만 next.revalidate 적용
+    if (typeof window === 'undefined') {
+      fetchOptions.next = {
+        revalidate: options?.noCache ? 0 : (options?.revalidate ?? DEFAULT_REVALIDATE),
+      };
+    }
+
     const response = await fetch(
       `${SEO_API_URL}?path=${encodeURIComponent(path)}`,
-      {
-        headers: { 'Authorization': `Bearer ${apiKey}` },
-        signal: AbortSignal.timeout(5000),
-      }
+      fetchOptions
     );
 
     if (!response.ok) return {};
 
-    const tags: MetaTags = await response.json();
-
-    // 캐시 저장
-    if (!options?.noCache) {
-      pathCache.set(path, tags, CACHE_TTL_MS);
-    }
-
-    return tags;
+    return await response.json() as MetaTags;
   } catch (error) {
     console.error('[SeoSDK] Failed to fetch meta:', error);
     return {};
   }
-}
-
-/**
- * 캐시 전체 초기화
- */
-export function clearSeoCache(): void {
-  pathCache.clear();
 }

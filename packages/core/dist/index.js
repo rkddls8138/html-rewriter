@@ -22,7 +22,6 @@ var index_exports = {};
 __export(index_exports, {
   DEFAULT_BOT_USER_AGENTS: () => DEFAULT_BOT_USER_AGENTS,
   MetaTagCache: () => MetaTagCache,
-  clearSeoCache: () => clearSeoCache,
   escapeHtml: () => escapeHtml,
   extractParams: () => extractParams,
   fetchSeoMeta: () => fetchSeoMeta,
@@ -38,60 +37,34 @@ __export(index_exports, {
 module.exports = __toCommonJS(index_exports);
 
 // src/seo-api-client.ts
-var TtlCache = class {
-  constructor() {
-    this.store = /* @__PURE__ */ new Map();
-  }
-  get(key) {
-    const entry = this.store.get(key);
-    if (!entry) return null;
-    if (Date.now() > entry.expires) {
-      this.store.delete(key);
-      return null;
-    }
-    return entry.data;
-  }
-  set(key, data, ttlMs) {
-    this.store.set(key, { data, expires: Date.now() + ttlMs });
-  }
-  clear() {
-    this.store.clear();
-  }
-};
 var SEO_API_URL = "https://iwoeewimpwdqbunnipol.supabase.co/functions/v1/seo-rules";
-var CACHE_TTL_MS = 3600 * 1e3;
-var pathCache = new TtlCache();
+var DEFAULT_REVALIDATE = 3600;
 async function fetchSeoMeta(path, options) {
   const apiKey = options?.apiKey || process.env.SEO_REWRITER_API_KEY;
   if (!apiKey) {
     console.warn("[SeoSDK] SEO_REWRITER_API_KEY not set");
     return {};
   }
-  if (!options?.noCache) {
-    const cached = pathCache.get(path);
-    if (cached) return cached;
-  }
   try {
+    const fetchOptions = {
+      headers: { "Authorization": `Bearer ${apiKey}` },
+      signal: AbortSignal.timeout(5e3)
+    };
+    if (typeof window === "undefined") {
+      fetchOptions.next = {
+        revalidate: options?.noCache ? 0 : options?.revalidate ?? DEFAULT_REVALIDATE
+      };
+    }
     const response = await fetch(
       `${SEO_API_URL}?path=${encodeURIComponent(path)}`,
-      {
-        headers: { "Authorization": `Bearer ${apiKey}` },
-        signal: AbortSignal.timeout(5e3)
-      }
+      fetchOptions
     );
     if (!response.ok) return {};
-    const tags = await response.json();
-    if (!options?.noCache) {
-      pathCache.set(path, tags, CACHE_TTL_MS);
-    }
-    return tags;
+    return await response.json();
   } catch (error) {
     console.error("[SeoSDK] Failed to fetch meta:", error);
     return {};
   }
-}
-function clearSeoCache() {
-  pathCache.clear();
 }
 
 // src/index.ts
@@ -277,7 +250,6 @@ var metaTagCache = new MetaTagCache();
 0 && (module.exports = {
   DEFAULT_BOT_USER_AGENTS,
   MetaTagCache,
-  clearSeoCache,
   escapeHtml,
   extractParams,
   fetchSeoMeta,

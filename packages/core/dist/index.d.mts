@@ -2,6 +2,7 @@
  * SEO API Client
  * Edge Function API를 통해 SEO 메타 태그를 가져오는 순수 HTTP 클라이언트
  * Supabase 의존성 제로 - fetch API만 사용
+ * 캐싱: Next.js fetch revalidate에 위임 (서버리스 환경에 최적)
  */
 
 interface FetchSeoOptions {
@@ -9,19 +10,21 @@ interface FetchSeoOptions {
     noCache?: boolean;
     /** API key 직접 전달 (기본: process.env.SEO_REWRITER_API_KEY) */
     apiKey?: string;
+    /** 캐시 revalidate 주기 (초) @default 3600 */
+    revalidate?: number;
 }
 /**
  * 경로에 매칭되는 SEO 메타 태그를 Edge Function API에서 가져오기
+ *
+ * 캐싱 전략:
+ * - Next.js SSR: fetch의 next.revalidate 옵션으로 ISR 스타일 캐싱
+ * - 비-Next.js 환경: 표준 fetch (캐싱 없음, CDN Cache-Control에 의존)
  *
  * @param path - URL 경로 (예: '/vehicles/tucson')
  * @param options - 캐시 제어 및 API key 옵션
  * @returns MetaTags 객체 (매칭 없으면 빈 객체)
  */
 declare function fetchSeoMeta(path: string, options?: FetchSeoOptions): Promise<MetaTags>;
-/**
- * 캐시 전체 초기화
- */
-declare function clearSeoCache(): void;
 
 /**
  * HTML Rewriter Core Library
@@ -119,4 +122,4 @@ declare class MetaTagCache {
 }
 declare const metaTagCache: MetaTagCache;
 
-export { DEFAULT_BOT_USER_AGENTS, type FetchSeoOptions, type HtmlRewriterConfig, MetaTagCache, type MetaTags, type RewriteRule, clearSeoCache, escapeHtml, extractParams, fetchSeoMeta, findMatchingRule, injectMetaTags, injectMetaTagsHeadOnly, isBot, metaTagCache, metaTagsToHtml, removeExistingMetaTags, removeExistingMetaTagsInHead };
+export { DEFAULT_BOT_USER_AGENTS, type FetchSeoOptions, type HtmlRewriterConfig, MetaTagCache, type MetaTags, type RewriteRule, escapeHtml, extractParams, fetchSeoMeta, findMatchingRule, injectMetaTags, injectMetaTagsHeadOnly, isBot, metaTagCache, metaTagsToHtml, removeExistingMetaTags, removeExistingMetaTagsInHead };
