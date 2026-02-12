@@ -6,6 +6,7 @@
 // SEO API Client exports
 export {
   fetchSeoMeta,
+  clearSeoCache,
   type FetchSeoOptions,
 } from './seo-api-client';
 

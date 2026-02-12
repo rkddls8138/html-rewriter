@@ -1,3 +1,42 @@
+"use strict";
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+// src/index.ts
+var index_exports = {};
+__export(index_exports, {
+  DEFAULT_BOT_USER_AGENTS: () => DEFAULT_BOT_USER_AGENTS,
+  MetaTagCache: () => MetaTagCache,
+  clearSeoCache: () => clearSeoCache,
+  escapeHtml: () => escapeHtml,
+  extractParams: () => extractParams,
+  fetchSeoMeta: () => fetchSeoMeta,
+  findMatchingRule: () => findMatchingRule,
+  injectMetaTags: () => injectMetaTags,
+  injectMetaTagsHeadOnly: () => injectMetaTagsHeadOnly,
+  isBot: () => isBot,
+  metaTagCache: () => metaTagCache,
+  metaTagsToHtml: () => metaTagsToHtml,
+  removeExistingMetaTags: () => removeExistingMetaTags,
+  removeExistingMetaTagsInHead: () => removeExistingMetaTagsInHead
+});
+module.exports = __toCommonJS(index_exports);
+
 // src/seo-api-client.ts
 var SEO_API_URL = "https://iwoeewimpwdqbunnipol.supabase.co/functions/v1/seo-rules";
 var DEFAULT_REVALIDATE = 3600;
@@ -27,6 +66,8 @@ async function fetchSeoMeta(path, options) {
     console.error("[SeoSDK] Failed to fetch meta:", error);
     return {};
   }
+}
+function clearSeoCache() {
 }
 
 // src/index.ts
@@ -208,9 +249,11 @@ var MetaTagCache = class {
   }
 };
 var metaTagCache = new MetaTagCache();
-export {
+// Annotate the CommonJS export names for ESM import in node:
+0 && (module.exports = {
   DEFAULT_BOT_USER_AGENTS,
   MetaTagCache,
+  clearSeoCache,
   escapeHtml,
   extractParams,
   fetchSeoMeta,
@@ -222,4 +265,4 @@ export {
   metaTagsToHtml,
   removeExistingMetaTags,
   removeExistingMetaTagsInHead
-};
+});

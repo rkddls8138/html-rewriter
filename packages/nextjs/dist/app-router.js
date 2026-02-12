@@ -34,26 +34,18 @@ function generateSeoMetadata(tags) {
   if (tags.custom) metadata.other = tags.custom;
   return metadata;
 }
-async function fetchAndGenerateMetadata(apiKey, path, options) {
-  const tags = await fetchSeoMeta(apiKey, path, {
-    apiUrl: options?.apiUrl,
-    params: options?.params,
-    fallback: options?.fallback,
-    cacheTtl: options?.cacheTtl
+async function fetchAndGenerateMetadata(path, options) {
+  const tags = await fetchSeoMeta(path, {
+    noCache: options?.noCache,
+    apiKey: options?.apiKey
   });
   return generateSeoMetadata(tags);
 }
-function createMetadataFetcher(config) {
-  return (path, params) => fetchAndGenerateMetadata(config.apiKey, path, {
-    apiUrl: config.apiUrl,
-    params,
-    fallback: config.fallback,
-    cacheTtl: config.cacheTtl
-  });
+function createMetadataFetcher(options) {
+  return (path) => fetchAndGenerateMetadata(path, options);
 }
-
 export {
-  generateSeoMetadata,
+  createMetadataFetcher,
   fetchAndGenerateMetadata,
-  createMetadataFetcher
+  generateSeoMetadata
 };

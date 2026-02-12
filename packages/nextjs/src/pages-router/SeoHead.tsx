@@ -8,7 +8,7 @@ import Head from 'next/head';
 import type { MetaTags, FetchSeoOptions } from '@rkddls8138/seo-core';
 import { fetchSeoMeta } from '@rkddls8138/seo-core';
 
-export interface SeoHeadProps extends MetaTags {}
+export interface SeoHeadProps extends MetaTags { }
 
 /**
  * Pages Router용 SEO Head 컴포넌트
@@ -67,14 +67,14 @@ export const SeoHead = memo(function SeoHead({
       {/* Custom Meta Tags */}
       {custom
         ? Object.entries(custom).map(([name, content]) => (
-            <meta
-              key={name}
-              {...(name.startsWith('og:') || name.startsWith('article:')
-                ? { property: name }
-                : { name })}
-              content={content}
-            />
-          ))
+          <meta
+            key={name}
+            {...(name.startsWith('og:') || name.startsWith('article:')
+              ? { property: name }
+              : { name })}
+            content={content}
+          />
+        ))
         : null}
     </Head>
   );

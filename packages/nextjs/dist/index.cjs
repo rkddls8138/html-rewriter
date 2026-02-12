@@ -17,6 +17,7 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __reExport = (target, mod, secondTarget) => (__copyProps(target, mod, "default"), secondTarget && __copyProps(secondTarget, mod, "default"));
 var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
   // If the importer is in node compatibility mode or this is not an ESM
   // file that has been converted to a CommonJS file using a Babel-
@@ -27,19 +28,70 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// src/pages-router/index.ts
-var pages_router_exports = {};
-__export(pages_router_exports, {
+// src/index.ts
+var src_exports = {};
+__export(src_exports, {
   SeoHead: () => SeoHead,
+  createMetadataFetcher: () => createMetadataFetcher,
+  fetchAndGenerateMetadata: () => fetchAndGenerateMetadata,
   fetchSeoMetaForPages: () => fetchSeoMetaForPages,
+  generateSeoMetadata: () => generateSeoMetadata,
   withSeoMeta: () => withSeoMeta
 });
-module.exports = __toCommonJS(pages_router_exports);
+module.exports = __toCommonJS(src_exports);
+__reExport(src_exports, require("@rkddls8138/seo-core"), module.exports);
+
+// src/app-router/metadata.ts
+var import_seo_core = require("@rkddls8138/seo-core");
+function generateSeoMetadata(tags) {
+  const metadata = {};
+  if (tags.title) metadata.title = tags.title;
+  if (tags.description) metadata.description = tags.description;
+  if (tags.keywords) metadata.keywords = tags.keywords;
+  if (tags.robots) metadata.robots = tags.robots;
+  if (tags.canonical) metadata.alternates = { canonical: tags.canonical };
+  const ogTitle = tags.ogTitle || tags.title;
+  const ogDescription = tags.ogDescription || tags.description;
+  if (ogTitle || ogDescription || tags.ogImage || tags.ogUrl || tags.ogType || tags.ogSiteName) {
+    metadata.openGraph = {
+      ...ogTitle && { title: ogTitle },
+      ...ogDescription && { description: ogDescription },
+      ...tags.ogImage && { images: [{ url: tags.ogImage }] },
+      ...tags.ogUrl && { url: tags.ogUrl },
+      ...tags.ogType && { type: tags.ogType },
+      ...tags.ogSiteName && { siteName: tags.ogSiteName }
+    };
+  }
+  const twTitle = tags.twitterTitle || ogTitle;
+  const twDescription = tags.twitterDescription || ogDescription;
+  const twImage = tags.twitterImage || tags.ogImage;
+  if (tags.twitterCard || twTitle || twDescription || twImage || tags.twitterSite) {
+    metadata.twitter = {
+      ...tags.twitterCard && { card: tags.twitterCard },
+      ...twTitle && { title: twTitle },
+      ...twDescription && { description: twDescription },
+      ...twImage && { images: [twImage] },
+      ...tags.twitterSite && { site: tags.twitterSite }
+    };
+  }
+  if (tags.custom) metadata.other = tags.custom;
+  return metadata;
+}
+async function fetchAndGenerateMetadata(path, options) {
+  const tags = await (0, import_seo_core.fetchSeoMeta)(path, {
+    noCache: options?.noCache,
+    apiKey: options?.apiKey
+  });
+  return generateSeoMetadata(tags);
+}
+function createMetadataFetcher(options) {
+  return (path) => fetchAndGenerateMetadata(path, options);
+}
 
 // src/pages-router/SeoHead.tsx
 var import_react = require("react");
-var import_head = __toESM(require("next/head"));
-var import_seo_core = require("@rkddls8138/seo-core");
+var import_head = __toESM(require("next/head"), 1);
+var import_seo_core2 = require("@rkddls8138/seo-core");
 var import_jsx_runtime = require("react/jsx-runtime");
 var SeoHead = (0, import_react.memo)(function SeoHead2({
   title,
@@ -92,7 +144,7 @@ var SeoHead = (0, import_react.memo)(function SeoHead2({
     )) : null
   ] });
 });
-var fetchSeoMetaForPages = (path, options) => (0, import_seo_core.fetchSeoMeta)(path, options);
+var fetchSeoMetaForPages = (path, options) => (0, import_seo_core2.fetchSeoMeta)(path, options);
 var withSeoMeta = (getServerSideProps, getPath, options) => async (context) => {
   const [meta, result] = await Promise.all([
     fetchSeoMetaForPages(getPath(context), options),
@@ -104,6 +156,10 @@ var withSeoMeta = (getServerSideProps, getPath, options) => async (context) => {
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   SeoHead,
+  createMetadataFetcher,
+  fetchAndGenerateMetadata,
   fetchSeoMetaForPages,
-  withSeoMeta
+  generateSeoMetadata,
+  withSeoMeta,
+  ...require("@rkddls8138/seo-core")
 });

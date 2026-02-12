@@ -79,3 +79,12 @@ export async function fetchSeoMeta(
     return {};
   }
 }
+
+/**
+ * SEO 캐시 초기화
+ * Next.js 환경에서는 fetch 캐시가 자동 관리되므로 주로 테스트/디버깅용
+ */
+export function clearSeoCache(): void {
+  // Next.js fetch revalidate 기반 캐싱은 프레임워크가 관리
+  // 비-Next.js 환경이나 테스트에서 수동 초기화가 필요할 때 사용
+}

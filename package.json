@@ -2,29 +2,29 @@
   "name": "html-rewriter",
   "version": "0.1.0",
   "description": "HTML Rewriter - SEO optimization library for web frameworks",
-  "main": "packages/core/dist/index.js",
-  "module": "packages/core/dist/index.mjs",
+  "main": "packages/core/dist/index.cjs",
+  "module": "packages/core/dist/index.js",
   "types": "packages/core/dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./packages/core/dist/index.d.ts",
-      "import": "./packages/core/dist/index.mjs",
-      "require": "./packages/core/dist/index.js"
+      "import": "./packages/core/dist/index.js",
+      "require": "./packages/core/dist/index.cjs"
     },
     "./nextjs": {
       "types": "./packages/nextjs/dist/index.d.ts",
-      "import": "./packages/nextjs/dist/index.mjs",
-      "require": "./packages/nextjs/dist/index.js"
+      "import": "./packages/nextjs/dist/index.js",
+      "require": "./packages/nextjs/dist/index.cjs"
     },
     "./nextjs/app-router": {
-      "types": "./packages/nextjs/dist/app-router/index.d.ts",
-      "import": "./packages/nextjs/dist/app-router/index.mjs",
-      "require": "./packages/nextjs/dist/app-router/index.js"
+      "types": "./packages/nextjs/dist/app-router.d.ts",
+      "import": "./packages/nextjs/dist/app-router.js",
+      "require": "./packages/nextjs/dist/app-router.cjs"
     },
     "./nextjs/pages-router": {
-      "types": "./packages/nextjs/dist/pages-router/index.d.ts",
-      "import": "./packages/nextjs/dist/pages-router/index.mjs",
-      "require": "./packages/nextjs/dist/pages-router/index.js"
+      "types": "./packages/nextjs/dist/pages-router.d.ts",
+      "import": "./packages/nextjs/dist/pages-router.js",
+      "require": "./packages/nextjs/dist/pages-router.cjs"
     }
   },
   "workspaces": [

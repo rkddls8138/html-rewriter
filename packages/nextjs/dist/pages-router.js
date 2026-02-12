@@ -54,24 +54,17 @@ var SeoHead = memo(function SeoHead2({
     )) : null
   ] });
 });
-var fetchSeoMetaForPages = (apiKey, path, options) => fetchSeoMeta(apiKey, path, options);
-var createPagesMetaFetcher = (config) => (path, params) => fetchSeoMetaForPages(config.apiKey, path, {
-  apiUrl: config.apiUrl,
-  params,
-  fallback: config.fallback
-});
-var withSeoMeta = (apiKey, getServerSideProps, getPath, options) => async (context) => {
+var fetchSeoMetaForPages = (path, options) => fetchSeoMeta(path, options);
+var withSeoMeta = (getServerSideProps, getPath, options) => async (context) => {
   const [meta, result] = await Promise.all([
-    fetchSeoMetaForPages(apiKey, getPath(context), options),
+    fetchSeoMetaForPages(getPath(context), options),
     getServerSideProps(context)
   ]);
   if (!("props" in result)) return result;
   return { props: { ...result.props, _seoMeta: meta } };
 };
-
 export {
   SeoHead,
   fetchSeoMetaForPages,
-  createPagesMetaFetcher,
   withSeoMeta
 };

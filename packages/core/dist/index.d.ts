@@ -25,6 +25,11 @@ interface FetchSeoOptions {
  * @returns MetaTags 객체 (매칭 없으면 빈 객체)
  */
 declare function fetchSeoMeta(path: string, options?: FetchSeoOptions): Promise<MetaTags>;
+/**
+ * SEO 캐시 초기화
+ * Next.js 환경에서는 fetch 캐시가 자동 관리되므로 주로 테스트/디버깅용
+ */
+declare function clearSeoCache(): void;
 
 /**
  * HTML Rewriter Core Library
@@ -120,4 +125,4 @@ declare class MetaTagCache {
 }
 declare const metaTagCache: MetaTagCache;
 
-export { DEFAULT_BOT_USER_AGENTS, type FetchSeoOptions, type HtmlRewriterConfig, MetaTagCache, type MetaTags, type RewriteRule, escapeHtml, extractParams, fetchSeoMeta, findMatchingRule, injectMetaTags, injectMetaTagsHeadOnly, isBot, metaTagCache, metaTagsToHtml, removeExistingMetaTags, removeExistingMetaTagsInHead };
+export { DEFAULT_BOT_USER_AGENTS, type FetchSeoOptions, type HtmlRewriterConfig, MetaTagCache, type MetaTags, type RewriteRule, clearSeoCache, escapeHtml, extractParams, fetchSeoMeta, findMatchingRule, injectMetaTags, injectMetaTagsHeadOnly, isBot, metaTagCache, metaTagsToHtml, removeExistingMetaTags, removeExistingMetaTagsInHead };
