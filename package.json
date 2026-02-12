@@ -25,25 +25,19 @@
       "types": "./packages/nextjs/dist/pages-router/index.d.ts",
       "import": "./packages/nextjs/dist/pages-router/index.mjs",
       "require": "./packages/nextjs/dist/pages-router/index.js"
-    },
-    "./react": {
-      "types": "./packages/react/dist/index.d.ts",
-      "import": "./packages/react/dist/index.mjs",
-      "require": "./packages/react/dist/index.js"
     }
   },
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build -w @rkddls8138/seo-core && npm run build -w @rkddls8138/seo-react && npm run build -w @rkddls8138/seo-nextjs",
+    "build": "npm run build -w @rkddls8138/seo-core && npm run build -w @rkddls8138/seo-nextjs",
     "dev": "npm run dev --workspaces",
     "clean": "npm run clean --workspaces",
     "typecheck": "npm run typecheck --workspaces"
   },
   "dependencies": {
     "@rkddls8138/seo-core": "file:packages/core",
-    "@rkddls8138/seo-react": "file:packages/react",
     "@rkddls8138/seo-nextjs": "file:packages/nextjs"
   },
   "peerDependencies": {
@@ -51,8 +45,12 @@
     "react": ">=18.0.0"
   },
   "peerDependenciesMeta": {
-    "next": { "optional": true },
-    "react": { "optional": true }
+    "next": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "typescript": "^5.3.0"

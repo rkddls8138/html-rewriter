@@ -9,16 +9,6 @@
 // Re-export core types and utilities
 export * from '@rkddls8138/seo-core';
 
-// Re-export React hooks and context
-export {
-  SeoProvider,
-  useSeoContext,
-  useSeoMeta,
-  useSeoMetaContext,
-  usePageMeta,
-} from '@rkddls8138/seo-react';
-export type { SeoProviderProps } from '@rkddls8138/seo-react';
-
 // App Router (Next.js 13+)
 export {
   generateSeoMetadata,

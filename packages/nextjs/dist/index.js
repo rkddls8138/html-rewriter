@@ -32,20 +32,14 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var index_exports = {};
 __export(index_exports, {
   SeoHead: () => SeoHead,
-  SeoProvider: () => import_seo_react.SeoProvider,
   createMetadataFetcher: () => createMetadataFetcher,
   fetchAndGenerateMetadata: () => fetchAndGenerateMetadata,
   fetchSeoMetaForPages: () => fetchSeoMetaForPages,
   generateSeoMetadata: () => generateSeoMetadata,
-  usePageMeta: () => import_seo_react.usePageMeta,
-  useSeoContext: () => import_seo_react.useSeoContext,
-  useSeoMeta: () => import_seo_react.useSeoMeta,
-  useSeoMetaContext: () => import_seo_react.useSeoMetaContext,
   withSeoMeta: () => withSeoMeta
 });
 module.exports = __toCommonJS(index_exports);
 __reExport(index_exports, require("@rkddls8138/seo-core"), module.exports);
-var import_seo_react = require("@rkddls8138/seo-react");
 
 // src/app-router/metadata.ts
 var import_seo_core = require("@rkddls8138/seo-core");
@@ -162,15 +156,10 @@ var withSeoMeta = (getServerSideProps, getPath, options) => async (context) => {
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   SeoHead,
-  SeoProvider,
   createMetadataFetcher,
   fetchAndGenerateMetadata,
   fetchSeoMetaForPages,
   generateSeoMetadata,
-  usePageMeta,
-  useSeoContext,
-  useSeoMeta,
-  useSeoMetaContext,
   withSeoMeta,
   ...require("@rkddls8138/seo-core")
 });

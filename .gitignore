@@ -36,4 +36,4 @@ coverage/
 # misc
 .claude/
 .omc/
-.docs/
+.docs

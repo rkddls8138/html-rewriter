@@ -233,12 +233,10 @@ export function removeExistingMetaTags(html: string): string {
 }
 
 /**
- * HTML <head>에만 Meta 태그 주입 (하이드레이션 안전)
+ * HTML <head>에만 Meta 태그 주입
  *
- * 핵심 원리:
  * 1. <head>...</head> 영역만 추출
  * 2. 해당 영역 내에서만 메타 태그 교체/추가
- * 3. <body>는 절대 수정하지 않음 → React 하이드레이션 에러 방지
  */
 export function injectMetaTags(html: string, metaTags: MetaTags, replace: boolean = true): string {
   // <head> 태그 매칭 (열림/닫힘 태그 포함)

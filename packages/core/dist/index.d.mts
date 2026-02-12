@@ -2,7 +2,7 @@
  * SEO API Client
  * Edge Function API를 통해 SEO 메타 태그를 가져오는 순수 HTTP 클라이언트
  * Supabase 의존성 제로 - fetch API만 사용
- * 캐싱: Next.js fetch revalidate에 위임 (서버리스 환경에 최적)
+ * 캐싱: Next.js fetch revalidate
  */
 
 interface FetchSeoOptions {
