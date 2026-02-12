@@ -32,7 +32,8 @@
       "mcp__supabase__get_publishable_keys",
       "Bash(node:*)",
       "mcp__supabase__deploy_edge_function",
-      "Bash(npm whoami:*)"
+      "Bash(npm whoami:*)",
+      "WebSearch"
     ],
     "additionalDirectories": [
       "c:\\git\\html-rewriter\\examples\\nextjs-test\\app\\product"
