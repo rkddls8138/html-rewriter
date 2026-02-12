@@ -11,7 +11,35 @@
       "Bash(npm run build:*)",
       "Bash(git restore:*)",
       "Bash(git checkout:*)",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(npm run dev:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(cmd /c \"taskkill /PID 32116 /F\")",
+      "Bash(powershell -Command:*)",
+      "Bash(curl:*)",
+      "Bash(npx skills:*)",
+      "Bash(npm run clean:*)",
+      "Bash(find:*)",
+      "mcp__supabase__list_projects",
+      "mcp__supabase__list_tables",
+      "mcp__supabase__search_docs",
+      "mcp__supabase__execute_sql",
+      "mcp__supabase__apply_migration",
+      "mcp__supabase__get_advisors",
+      "mcp__supabase__get_project_url",
+      "mcp__supabase__get_publishable_keys",
+      "Bash(node:*)",
+      "mcp__supabase__deploy_edge_function",
+      "Bash(npm whoami:*)"
+    ],
+    "additionalDirectories": [
+      "c:\\git\\html-rewriter\\examples\\nextjs-test\\app\\product"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "supabase"
+  ]
 }
